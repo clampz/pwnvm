@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# fix
+echo "set grub-pc/install_devices /dev/sda" | sudo debconf-communicate
+
 # Updates
 sudo apt-get -y update
 sudo apt-get -y upgrade
@@ -139,3 +142,24 @@ sudo apt-get -y install libc6:i386 libc6-dbg:i386 libncurses5:i386 libstdc++6:i3
 git clone https://github.com/Z3Prover/z3.git && cd z3
 python scripts/mk_make.py --python
 cd build; make && sudo make install
+
+# Put challenges on the box
+cd 
+mkdir challs
+cd challs
+
+# Drop em, first my examples
+git clone https://github.com/clampz/intro-examples.git
+cd intro-examples
+make all
+make clean
+
+# then the real challs
+cd ..
+git clone https://github.com/clampz/ctf-pwning.git
+cd 
+
+# tweak dotfiles
+echo "source /home/vagrant/tools/gef/gef.py" > /home/vagrant/.gdbinit
+sed -i 's/robbyrussell/refined/g' /home/vagrant/.zshrc
+echo "alias ls='ls -l --color=auto'" >> /home/vagrant/.zshrc
